@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maurício Supleno — Desenvolvimento Humano</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --background: #000000;
+            --foreground: #ffffff;
+            --primary: #7C3AED;
+            --primary-glow: rgba(124, 58, 237, 0.3);
+            --muted: rgba(255, 255, 255, 0.6);
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--background);
+            color: var(--foreground);
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Instrument Serif', serif;
+            font-style: italic;
+        }
+
+        /* Liquid Glass Effect */
+        .liquid-glass {
+            background: rgba(255, 255, 255, 0.01);
+            background-blend-mode: luminosity;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border: none;
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .liquid-glass::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 1.4px;
+            background: linear-gradient(180deg,
+                rgba(255,255,255,0.45) 0%, 
+                rgba(255,255,255,0.15) 20%,
+                rgba(255,255,255,0) 40%, 
+                rgba(255,255,255,0) 60%,
+                rgba(255,255,255,0.15) 80%, 
+                rgba(255,255,255,0.45) 100%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+
+        .liquid-glass-strong {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(50px);
+            -webkit-backdrop-filter: blur(50px);
+            box-shadow: 4px 4px 4px rgba(0,0,0,0.05), inset 0 1px 1px rgba(255,255,255,0.15);
+            border-radius: 9999px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .liquid-glass-strong::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 1.4px;
+            background: linear-gradient(180deg,
+                rgba(255,255,255,0.5) 0%, 
+                rgba(255,255,255,0.2) 20%,
+                rgba(255,255,255,0) 40%, 
+                rgba(255,255,255,0) 60%,
+                rgba(255,255,255,0.2) 80%, 
+                rgba(255,255,255,0.5) 100%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+
+        /* Video Background */
+        .video-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            object-fit: cover;
+            z-index: 0;
+            opacity: 0.4;
+        }
+
+        .video-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.7), rgba(0,0,0,0.3), rgba(0,0,0,0.9));
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 8rem 2rem 4rem;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 1.5rem;
+            border-radius: 9999px;
+            margin-bottom: 2rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 8vw, 6rem);
+            line-height: 1.1;
+            letter-spacing: -0.04em;
+            margin-bottom: 1.5rem;
+            animation: fadeInUp 0.6s ease-out 0.2s backwards;
+        }
+
+        .hero h1 .highlight {
+            background: linear-gradient(135deg, var(--primary), #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.125rem;
+            line-height: 1.6;
+            max-width: 600px;
+            color: var(--muted);
+            margin-bottom: 2.5rem;
+            animation: fadeInUp 0.6s ease-out 0.4s backwards;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            animation: fadeInUp 0.6s ease-out 0.6s backwards;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            font-weight: 500;
+            border-radius: 9999px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px var(--primary-glow);
+        }
+
+        .btn-secondary {
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            transform: scale(1.05);
+            background: rgba(255,255,255,0.05);
+        }
+
+        /* About Section */
+        .about {
+            padding: 6rem 0;
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .about-image {
+            position: relative;
+            border-radius: 1rem;
+            overflow: hidden;
+        }
+
+        .about-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            filter: grayscale(30%);
+        }
+
+        .about-text h2 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .about-text p {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: var(--muted);
+            margin-bottom: 1rem;
+        }
+
+        .about-text .quote {
+            font-family: 'Instrument Serif', serif;
+            font-style: italic;
+            font-size: 1.25rem;
+            color: var(--primary);
+            margin: 2rem 0;
+            padding-left: 1.5rem;
+            border-left: 3px solid var(--primary);
+        }
+
+        /* Services Section */
+        .services {
+            padding: 6rem 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            margin-bottom: 3rem;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .service-card {
+            padding: 2.5rem;
+            border-radius: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            background: rgba(124, 58, 237, 0.05);
+        }
+
+        .service-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .service-card p {
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        /* Testimonials Section */
+        .testimonials {
+            padding: 6rem 0;
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .testimonial-card {
+            padding: 2rem;
+            border-radius: 1rem;
+        }
+
+        .testimonial-quote {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--muted);
+            margin-bottom: 1.5rem;
+        }
+
+        .testimonial-author {
+            font-weight: 600;
+            color: white;
+        }
+
+        .testimonial-role {
+            font-size: 0.875rem;
+            color: var(--muted);
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 8rem 0;
+            text-align: center;
+        }
+
+        .cta-section h2 {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .cta-section p {
+            font-size: 1.125rem;
+            color: var(--muted);
+            max-width: 600px;
+            margin: 0 auto 2.5rem;
+        }
+
+        /* Footer */
+        footer {
+            padding: 3rem 0;
+            border-top: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-link {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            background: var(--primary);
+            transform: scale(1.1);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .about-content {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-cta {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Video -->
+    <video class="video-bg" autoplay loop muted playsinline>
+        <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260307_083826_e938b29f-a43a-41ec-a153-3d4730578ab8.mp4" type="video/mp4">
+    </video>
+    <div class="video-overlay"></div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-badge liquid-glass">
+                <span>✨</span>
+                <span>Desenvolvimento Humano Transformador</span>
+            </div>
+
+            <h1>
+                O problema não é <span class="highlight">o problema.</span><br>
+                Quem ajuda <span class="highlight">não ajuda.</span>
+            </h1>
+
+            <p>
+                Trainer PNL, Terapeuta e especialista em Desenvolvimento Humano. 
+                Mais de 20 anos transformando vidas através de PNL, Hipnose Ericksoniana, 
+                Análise Transacional e o Método Supleno.
+            </p>
+
+            <div class="hero-cta">
+                <a href="https://instagram.com/suplenamente" class="btn btn-primary">
+                    Agendar Mentoria
+                </a>
+                <a href="#sobre" class="btn btn-secondary liquid-glass-strong">
+                    Conhecer Maurício
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about" id="sobre">
+        <div class="container">
+            <div class="about-content">
+                <div class="about-image liquid-glass">
+                    <img src="https://antonio.mais.top/assets/antonio.jpg" alt="Maurício Supleno">
+                </div>
+                <div class="about-text">
+                    <h2>Quem é Maurício Supleno</h2>
+                    <p>
+                        Trainer e Pós-Graduado em PNL e Coaching Sistêmico, com formação em 
+                        Terapia Provocativa, Hipnose Ericksoniana, Análise Transacional, 
+                        Teoria Integral e mais de 15 abordagens terapêuticas.
+                    </p>
+                    <p>
+                        Criador do <strong>Método Supleno</strong> — uma abordagem única que 
+                        promove protagonismo e adultização através da transição do Quadro do Drama 
+                        para o Quadro do Sucesso.
+                    </p>
+                    <div class="quote">
+                        "O movimento traz clareza de resultado."
+                    </div>
+                    <p>
+                        Ao longo de mais de 20 anos, ajudei centenas de pessoas a saírem 
+                        do vitimismo para o protagonismo, do drama para o sucesso, 
+                        da reatividade para a responsabilidade.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services">
+        <div class="container">
+            <h2 class="section-title">Como posso te ajudar</h2>
+            <div class="services-grid">
+                <div class="service-card liquid-glass">
+                    <h3>Mentoria Individual</h3>
+                    <p>
+                        Sessões individualizadas focadas em transformação profunda. 
+                        Aplicação do Método Supleno para promover protagonismo e 
+                        clareza de resultado através do movimento.
+                    </p>
+                </div>
+
+                <div class="service-card liquid-glass">
+                    <h3>Hipnotoque</h3>
+                    <p>
+                        Intensivo de Hipnose Ericksoniana e Clássica. 
+                        Trabalho profundo com inconsciente para resolução de traumas, 
+                        crenças limitantes e padrões comportamentais.
+                    </p>
+                </div>
+
+                <div class="service-card liquid-glass">
+                    <h3>Formação de Terapeutas</h3>
+                    <p>
+                        Treinamento completo em PNL, Coaching Sistêmico, Análise Transacional 
+                        e Método Supleno. Forme-se com quem tem mais de 20 anos de experiência 
+                        prática em Desenvolvimento Humano.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials">
+        <div class="container">
+            <h2 class="section-title">O que dizem sobre o trabalho</h2>
+            <div class="testimonials-grid">
+                <div class="testimonial-card liquid-glass">
+                    <p class="testimonial-quote">
+                        "A abordagem do Maurício é direta e transformadora. 
+                        Ele não passa a mão na cabeça, ele te desafia a crescer. 
+                        Saí do vitimismo e assumi minha vida de verdade."
+                    </p>
+                    <div class="testimonial-author">Ana Paula R.</div>
+                    <div class="testimonial-role">Mentoria Individual</div>
+                </div>
+
+                <div class="testimonial-card liquid-glass">
+                    <p class="testimonial-quote">
+                        "O Hipnotoque mudou minha vida. Consegui resolver traumas 
+                        de anos em poucas sessões. A técnica do Maurício é impressionante."
+                    </p>
+                    <div class="testimonial-author">Carlos E.</div>
+                    <div class="testimonial-role">Hipnotoque</div>
+                </div>
+
+                <div class="testimonial-card liquid-glass">
+                    <p class="testimonial-quote">
+                        "Fiz a formação de terapeutas e aprendi muito mais do que 
+                        técnicas — aprendi uma filosofia de vida e trabalho. 
+                        Recomendo para quem quer ser terapeuta de verdade."
+                    </p>
+                    <div class="testimonial-author">Marina S.</div>
+                    <div class="testimonial-role">Formação de Terapeutas</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <h2>Pronto para transformar sua vida?</h2>
+            <p>
+                Agende uma sessão de mentoria individual ou conheça o Hipnotoque. 
+                O primeiro passo é seu — o movimento traz clareza de resultado.
+            </p>
+            <a href="https://instagram.com/suplenamente" class="btn btn-primary">
+                Agendar Agora
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div>
+                    <p>&copy; 2026 Maurício Supleno. Todos os direitos reservados.</p>
+                </div>
+                <div class="footer-social">
+                    <a href="https://instagram.com/suplenamente" class="social-link liquid-glass" target="_blank">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
